@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIZWORK // DIGITAL_STOREFRONT_CORE</title>
+    <style>
+        :root {
+            --bg-void: #0a0a0a;
+            --text-main: #f5f5f5;
+            --text-muted: #737373;
+            --accent-green: #00ff66;
+            --border-dark: #262626;
+            --card-bg: #111111;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 5rem;
+            overflow-x: hidden;
+        }
+
+        /* --- HEADER REGISTRY --- */
+        header {
+            width: 100%;
+            padding: 2rem 5%;
+            border-bottom: 1px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(10, 10, 10, 0.82);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .brand-logo {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            text-transform: uppercase;
+        }
+
+        .brand-logo span {
+            color: var(--accent-green);
+        }
+
+        .server-status {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        /* --- CENTRAL VIEWPORT --- */
+        main {
+            max-width: 1400px;
+            margin: 3rem auto;
+            padding: 0 5%;
+        }
+
+        .catalog-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .catalog-header h2 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* --- PRODUCT DISPLAY GRID --- */
+        .storefront-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-dark);
+            border-radius: 4px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            border-color: #404040;
+        }
+
+        .product-image-frame {
+            width: 100%;
+            height: 340px;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border-bottom: 1px solid var(--border-dark);
+        }
+
+        .product-image-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .placeholder-visual {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: #404040;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background-color: rgba(0, 0, 0, 0.75);
+            border: 1px solid var(--accent-green);
+            color: var(--accent-green);
+            font-family: monospace;
+            font-size: 0.65rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .product-details {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .product-meta {
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 1.25rem;
+        }
+
+        .product-checkout-row {
+            margin-top: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(38, 38, 38, 0.5);
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .buy-button {
+            background-color: var(--text-main);
+            color: var(--bg-void);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+            cursor: pointer;
+            transition: background-color 0.1s ease;
+        }
+
+        .buy-button:hover {
+            background-color: var(--accent-green);
+        }
+
+        /* --- HIDDEN ADMIN PANEL VIA CONSOLE OVERRIDE --- */
+        #admin-panel {
+            display: none;
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border: 2px solid var(--accent-green);
+            border-radius: 6px;
+            padding: 2rem;
+            z-index: 1000;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.75);
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-dark);
+            padding-bottom: 0.5rem;
+        }
+
+        .admin-header h3 {
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: var(--accent-green);
+        }
+
+        .admin-close {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+        }
+
+        .form-group input {
+            width: 100%;
+            background-color: var(--bg-void);
+            border: 1px solid var(--border-dark);
+            color: var(--text-main);
+            padding: 0.6rem;
+            border-radius: 2px;
+            font-size: 0.9rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-green);
+        }
+
+        .admin-submit-btn {
+            width: 100%;
+            background-color: var(--accent-green);
+            color: #000;
+            border: none;
+            padding: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            border-radius: 2px;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- CONTAINER HEADER SYSTEM -->
+    <header>
+        <div class="brand-logo">BIZWORK<span>_</span></div>
+        <div class="server-status">
+            <div class="status-dot"></div>
+            CORE_SYS_ACTIVE // USER: ADMIN
+        </div>
+    </header>
+
+    <!-- LIVE VIEWPORT STAGE -->
+    <main>
+        <div class="catalog-header">
+            <h2 id="availability-counter">AVAILABLE_ITEMS [3]</h2>
+        </div>
+
+        <!-- PRODUCTS INJECT HERE DYNAMICALLY -->
+        <div class="storefront-grid" id="product-container"></div>
+    </main>
+
+    <!-- HIDDEN EXECUTIVE CONTROL INTERFACE -->
+    <div id="admin-panel">
+        <div class="admin-header">
+            <h3>[ADMIN_POST_INTERFACE_ENGAGED]</h3>
+            <button class="admin-close" onclick="closeAdmin()">×</button>
+        </div>
+        <div class="form-group">
+            <label>Garment Name</label>
+            <input type="text" id="prod-name" placeholder="e.g., Heavy Cotton Box Tee">
+        </div>
+        <div class="form-group">
+            <label>Product Specification / SKU Code</label>
+            <input type="text" id="prod-sku" placeholder="e.g., BZWRK-T1-04">
+        </div>
+        <div class="form-group">
+            <label>Retail Price (USD)</label>
+            <input type="number" id="prod-price" placeholder="e.g., 50">
+        </div>
+        <div class="form-group">
+            <label>Image URL (Leave blank for default placeholder)</label>
+            <input type="text" id="prod-img" placeholder="https://example.com">
+        </div>
+        <button class="admin-submit-btn" onclick="addNewProduct()">Deploy to Storefront Grid</button>
+    </div>
+
+    <!-- DATA CONTROLLER MECHANISMS -->
+    <script>
+        // CORE STOCK STORAGE ARCHIVE
+        let currentInventory = [
+            { id: 1, name: "Heavyweight Core Tee", sku: "BZWRK-T1-01", price: 50, image: "" },
+            { id: 2, name: "Structured Technical Cap", sku: "BZWRK-T1-02", price: 65, image: "" },
+            { id: 3, name: "Industrial Canvas Cargo Tote", sku: "BZWRK-T1-03", price: 120, image: "" }
+        ];
+
